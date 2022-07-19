@@ -1,0 +1,21 @@
+version: '3.9'
+services:
+  nodejs:
+    build:
+      context: .
+      target: local
+    image: p2p-service:local
+    container_name: p2p-node
+    restart: unless-stopped
+    tty: true
+    environment:
+      - PORT=8080
+    volumes:
+      - ./:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+    ports:
+      - 9229:9229
+
+volumes:
+  dbdata:
+  node_modules:

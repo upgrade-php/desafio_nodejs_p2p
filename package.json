@@ -1,0 +1,23 @@
+{
+  "name": "p2p",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon --inspect=0.0.0.0:9229 ./server.js",
+    "test": "node --inspect=0.0.0.0:9229 node_modules\/jest\/bin\/jest.js -i"
+  },
+  "author": "Vicente Pinheiro <vpp.filho@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^27.5.1",
+    "nodemon": "^2.0.15",
+    "superagent": "^7.1.1",
+    "supertest": "^6.2.2"
+  },
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
