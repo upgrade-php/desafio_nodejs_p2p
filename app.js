@@ -1,10 +1,21 @@
+const RunContainer = require('./config/containers')
+const configure_middleware = require('./src/apis/middlewares/register')
 const app = require('express')()
+const { configure_routers } = require('./src/routes')
 
-app.get('/health', function (req, res) {
-  res.status(200).json({
-    'success': true
-  });
-});
+async function bootstrap() {
+  let container = await RunContainer.create()
 
+  const deps = (req, res, next) => {
+    req.getContainer = (name) => container.get(name)
+    next()
+  }
+  app.use(deps)
+  configure_middleware(app)
+  configure_routers(app)
+  return { app, container }
+}
 
-module.exports = app;
+module.exports = {
+  bootstrap: bootstrap,
+}
