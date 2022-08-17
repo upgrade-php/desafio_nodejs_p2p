@@ -1,3 +1,4 @@
+const request = require('supertest')
 const { bootstrap } = require('../../app')
 
 describe('Api Account', () => {
@@ -18,10 +19,6 @@ describe('Api Account', () => {
     await connection.collection('account').deleteMany({})
   })
 
-  beforeEach(async () => {
-    await connection.collection('account').deleteMany({})
-  })
-
   it('api account get person by cpf or cnpj', async () => {
     const cpf_cnpj = '22124559095'
     await repository.create(
@@ -35,4 +32,5 @@ describe('Api Account', () => {
     expect(response.statusCode).toBe(200)
     expect(!('password' in response.body.data)).toBe(true)
   })
+
 })
