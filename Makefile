@@ -16,4 +16,8 @@ lint:
 	npx prettier --check src
 	npx prettier --check test
 tests:
+	make lint
 	npm run test
+
+coverage:
+	node_modules/jest/bin/jest.js --coverage

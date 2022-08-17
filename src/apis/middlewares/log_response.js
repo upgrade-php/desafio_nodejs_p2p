@@ -14,9 +14,13 @@ async function logResponseBody(req, res, next) {
 
   res.end = function (chunk) {
     if (chunk) chunks.push(chunk)
-
-    var body = Buffer.concat(chunks).toString('utf8')
-    logger.log('REPONSE', { content: body, endpoint: req.originalUrl })
+    if(res.statusCode<404){
+      var body = Buffer.concat(chunks).toString('utf8')
+    }else{
+      var body = {}
+    }
+   
+    logger.log('REPONSE', { content: body, endpoint: req.originalUrl, status:res.statusCode})
     logger.log('REPONSE END', '--------------------------')
     oldEnd.apply(res, arguments)
   }

@@ -1,65 +1,13 @@
+const AbstractRepository = require('../../base/AbastractRespository')
 const { Account, AccountState } = require('../entity/Account')
-const factory = require('../factory/account')
-const ObjectId = require('mongodb').ObjectId
-
-class AbstractRepository {
-  constructor(db, repository_name, logger) {
-    this.db = db
-    this.setNameCollection(repository_name)
-    this.configureRepository()
-    this.logger = logger
-  }
-
-  configureRepository() {
-    this.repository = this.getCollection(this.collectionName)
-  }
-
-  setNameCollection(collection) {
-    if (typeof collection == 'function') {
-      this.collectionName = collection.name.toLowerCase()
-    } else {
-      this.collectionName = collection.toLowerCase()
-    }
-  }
-
-  getCollection(name) {
-    return this.db.collection(name)
-  }
-
-  async save(entity) {
-    const data = await entity.toJson()
-    this.logger.log('DOCUMENT DATA', data)
-
-    if (!data['_id']) {
-      let document = await this.repository.insertOne(
-        Object.assign({}, data, { created_at: new Date() })
-      )
-      this.logger.log('DOCUMENT INSERTED', document)
-      return document
-    }
-
-    const data2 = Object.assign({}, data, { updated_at: new Date() })
-    let document = await this.repository.updateOne(
-      { _id: data2['_id'] },
-      { $set: data2 }
-    )
-    this.logger.log('DOCUMENT UPDATED', document)
-
-    return document
-  }
-}
 
 class AccountRepository extends AbstractRepository {
-  constructor(db, logger) {
-    super(db, Account, logger)
+  constructor(db, session, logger) {
+    super(db, Account, logger, session)
   }
 
   async findAll() {
     return await this.repository.find().toArray()
-  }
-
-  async findById(id) {
-    return await this.findOneBy({ _id: new ObjectId(id) })
   }
 
   async findPersonByCpfCnpj(cpf_cnpj) {
@@ -77,14 +25,11 @@ class AccountRepository extends AbstractRepository {
     })
   }
 
-  async findOneBy(where) {
-    this.logger.log('QUERY:', where)
-    const rs = await this.repository.findOne(where)
-    this.logger.log('QUERY RESULT', rs)
-    if (!rs) {
-      return null
-    }
-    return factory.loadFromDb(rs)
+  async getActiveAccountByAccountNumber(account_number) {
+    return await this.findOneBy({
+      account_number: account_number,
+      status: AccountState.active,
+    })
   }
 
   async count() {
@@ -92,8 +37,22 @@ class AccountRepository extends AbstractRepository {
   }
 
   async create(name, phone, email, cpf_cnpj, password) {
-    const account = factory.createAccount({
-      person: { name: name, phone: phone, email: email, cpf_cnpj: cpf_cnpj },
+    const check = await this.repository
+      .find({
+        $or: [{ 'person.cpf_cnpj': cpf_cnpj }, { 'person.email': email }],
+      })
+      .count()
+    if (check) {
+      throw new Error('Reported data already exists in our database')
+    }
+
+    const account = this.factory.createAccount({
+      person: {
+        name: name,
+        phone: phone,
+        email: email,
+        cpf_cnpj: cpf_cnpj,
+      },
       password: password,
     })
 

@@ -35,7 +35,14 @@ class RunContainer {
   }
 
   get(name) {
+    if (!this._hasContainer(name)) {
+      return null
+    }
     return this._container[name]
+  }
+
+  set(name, value) {
+    this._container[name] = value
   }
 
   static async create() {

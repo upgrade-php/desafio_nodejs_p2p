@@ -38,7 +38,7 @@ class Account {
     ;(this.person = person), this.setPassword(password)
     this.account_number = account_number
     this.created_at = created_at
-    this._balance = balance
+    this._balance = parseFloat(balance)
     this._id = _id
     this.status = status
     this.updated_at = updated_at
@@ -76,6 +76,9 @@ class Account {
   }
 
   addBalance(balance) {
+    if(isNaN(balance)){
+      throw new Error('Value is not valid')
+    }
     this._balance += balance
   }
 
@@ -92,6 +95,10 @@ class Account {
 
   encryptPassword() {
     this.password = bcrypt.hashSync(this.password, this.saltRounds)
+  }
+
+  get id() {
+    return this._id.toString()
   }
 
   toJson(hide = false) {

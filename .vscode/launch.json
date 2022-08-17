@@ -15,7 +15,6 @@
       "timeout": 10000,
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "/usr/src/app",
-      "internalConsoleOptions": "neverOpen",
       "continueOnAttach": true
     }
   ]

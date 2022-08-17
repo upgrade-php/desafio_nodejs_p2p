@@ -1,15 +1,5 @@
 version: '3.9'
 services:
-  db:
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: p2p
-      MONGO_INITDB_ROOT_PASSWORD: p2p
-      MONGO_INITDB_DATABASE: p2p
-    ports:
-      - '27017:27017'
-    volumes:
-      - p2p-data:/data/db
   nodejs:
     build:
       context: .
@@ -20,16 +10,10 @@ services:
     tty: true
     environment:
       - PORT=8080
-      - MONGODB_URL=mongodb://p2p:p2p@db:27017?retryWrites=true&w=majority
+      - MONGODB_URL=mongodb+srv://p2p:p2p@cluster0.d7yqw1g.mongodb.net/?retryWrites=true&w=majority
       - DB_NAME=p2p
     volumes:
       - ./:/usr/src/app
     ports:
       - 9229:9229
       - 8020:8080
-    depends_on:
-      - db
-volumes:
-  dbdata:
-  node_modules:
-  p2p-data:

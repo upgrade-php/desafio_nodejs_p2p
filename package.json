@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon --inspect=0.0.0.0:9229 ./server.js",
-    "test": "node --inspect node_modules/jest/bin/jest.js -i --forceExit"
+    "test": "node --inspect=0.0.0.0:9229 node_modules/jest/bin/jest.js -i --forceExit"
   },
   "author": "Vicente Pinheiro <vpp.filho@gmail.com>",
   "license": "ISC",
@@ -29,11 +29,14 @@
     "br-validations": "^0.3.1",
     "email-validator": "^2.0.4",
     "express": "^4.17.3",
+    "express-async-errors": "^3.1.1",
     "faker": "^6.6.6",
     "faker-br": "^0.4.1",
+    "glob": "^8.0.3",
     "migrate-mongo": "^9.0.0",
     "mongodb": "^4.6",
     "reflect-metadata": "^0.1.13",
+    "run-rs": "^0.7.7",
     "telefone": "^1.2.2",
     "validar-telefone": "^0.1.0"
   },
